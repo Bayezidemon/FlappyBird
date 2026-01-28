@@ -1,14 +1,4 @@
 body {
-    font-family: 'Courier New', Courier, monospace;
-    text-align: center;
-}
-
-#board {
-    /* background-color: skyblue; */
-    background-image: url("./flappybirdbg.png");
-}
-
-body {
     margin: 0;
     background: #222;
     display: flex;
@@ -48,12 +38,7 @@ canvas {
     cursor: pointer;
 }
 
-/* Tap button hidden on desktop */
-#tapBtn {
-    display: none;
-}
-
-/* MOBILE */
+/* MOBILE FIX */
 @media (max-width: 768px) {
     body {
         background: #70c5ce;
@@ -67,7 +52,7 @@ canvas {
 
     canvas {
         width: 100vw;
-        height: 100vh;
+        /* ✅ only width */
         border-radius: 0;
     }
 }
