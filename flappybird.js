@@ -37,19 +37,19 @@ let velocityX = isMobile ? -1.6 : -2;
 let velocityY = 0;
 let gravity = isMobile ? 0.35 : 0.4;
 
-// 🔥 Jump power (mobile softer)
+// Jump power (mobile softer)
 let jumpPower = isMobile ? -4.5 : -6;
 
 let gameOver = false;
 let score = 0;
 
-// High Score
+// High score
 let highScore = localStorage.getItem("flappyHighScore") || 0;
 
-// 🔊 Sound control flag (IMPORTANT)
+// 🔒 IMPORTANT FLAG
 let userInteracted = false;
 
-// 🎵 Sounds
+// Sounds
 let bgm = new Audio("bgm_mario.mp3");
 bgm.loop = true;
 bgm.volume = 0.3;
@@ -103,7 +103,9 @@ function update() {
             bird.height
         );
 
-        if (bird.y > board.height) endGame();
+        if (bird.y > board.height) {
+            endGame();
+        }
 
         for (let pipe of pipeArray) {
             pipe.x += velocityX;
@@ -119,8 +121,10 @@ function update() {
                 score += 0.5;
                 pipe.passed = true;
 
-                sfxPoint.currentTime = 0;
-                sfxPoint.play();
+                if (userInteracted) {
+                    sfxPoint.currentTime = 0;
+                    sfxPoint.play().catch(() => { });
+                }
             }
 
             if (detectCollision(bird, pipe)) {
@@ -132,7 +136,7 @@ function update() {
             pipeArray.shift();
         }
 
-        // Score panel
+        // Score UI
         context.fillStyle = "rgba(0,0,0,0.5)";
         context.fillRect(boardWidth - 140, 10, 130, 60);
         context.fillStyle = "white";
@@ -147,13 +151,13 @@ function update() {
             localStorage.setItem("flappyHighScore", highScore);
         }
 
-        let boxMargin = isMobile ? 20 : 30;
-        let boxWidth = boardWidth - boxMargin * 2;
+        let margin = isMobile ? 20 : 30;
+        let boxWidth = boardWidth - margin * 2;
         let boxHeight = 180;
 
         context.fillStyle = "rgba(0,0,0,0.7)";
         context.fillRect(
-            boxMargin,
+            margin,
             boardHeight / 2 - boxHeight / 2,
             boxWidth,
             boxHeight
@@ -216,15 +220,14 @@ function jump(e) {
         e.type === "keydown" &&
         e.code !== "Space" &&
         e.code !== "ArrowUp"
-    )
-        return;
+    ) return;
 
     userInteracted = true;
 
     velocityY = jumpPower;
 
     sfxWing.currentTime = 0;
-    sfxWing.play();
+    sfxWing.play().catch(() => { });
 
     if (bgm.paused) {
         bgm.play().catch(() => { });
@@ -238,8 +241,11 @@ function endGame() {
 
     gameOver = true;
     bgm.pause();
-    sfxHit.play();
-    sfxDie.play();
+
+    if (userInteracted) {
+        sfxHit.play().catch(() => { });
+        sfxDie.play().catch(() => { });
+    }
 }
 
 function restartGame() {
