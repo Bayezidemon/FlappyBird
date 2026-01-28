@@ -7,3 +7,67 @@ body {
     /* background-color: skyblue; */
     background-image: url("./flappybirdbg.png");
 }
+
+body {
+    margin: 0;
+    background: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Game container */
+.game-wrapper {
+    position: relative;
+    background: #70c5ce;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+}
+
+/* Canvas */
+canvas {
+    display: block;
+    background: #70c5ce;
+    border-radius: 12px;
+}
+
+/* Restart button */
+#restartBtn {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 70%;
+    transform: translateX(-50%);
+    padding: 12px 22px;
+    font-size: 18px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Tap button hidden on desktop */
+#tapBtn {
+    display: none;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    body {
+        background: #70c5ce;
+    }
+
+    .game-wrapper {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+    }
+
+    canvas {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+    }
+}

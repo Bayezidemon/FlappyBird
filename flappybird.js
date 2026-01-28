@@ -15,7 +15,12 @@ let birdX = boardWidth / 8;
 let birdY = boardHeight / 2;
 let birdImg;
 
-let bird = { x: birdX, y: birdY, width: birdWidth, height: birdHeight };
+let bird = {
+    x: birdX,
+    y: birdY,
+    width: birdWidth,
+    height: birdHeight
+};
 
 // Pipes
 let pipeArray = [];
@@ -40,6 +45,9 @@ let score = 0;
 
 // High Score
 let highScore = localStorage.getItem("flappyHighScore") || 0;
+
+// 🔊 Sound control flag (IMPORTANT)
+let userInteracted = false;
 
 // 🎵 Sounds
 let bgm = new Audio("bgm_mario.mp3");
@@ -69,12 +77,13 @@ window.onload = function () {
     requestAnimationFrame(update);
     setInterval(placePipes, 1500);
 
-    // Controls (no button, full screen tap)
+    // Controls (full screen tap)
     document.addEventListener("keydown", jump);
     document.addEventListener("click", jump);
     document.addEventListener("touchstart", jump);
 
-    document.getElementById("restartBtn")
+    document
+        .getElementById("restartBtn")
         .addEventListener("click", restartGame);
 };
 
@@ -85,13 +94,26 @@ function update() {
     if (!gameOver) {
         velocityY += gravity;
         bird.y = Math.max(bird.y + velocityY, 0);
-        context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+
+        context.drawImage(
+            birdImg,
+            bird.x,
+            bird.y,
+            bird.width,
+            bird.height
+        );
 
         if (bird.y > board.height) endGame();
 
         for (let pipe of pipeArray) {
             pipe.x += velocityX;
-            context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
+            context.drawImage(
+                pipe.img,
+                pipe.x,
+                pipe.y,
+                pipe.width,
+                pipe.height
+            );
 
             if (!pipe.passed && bird.x > pipe.x + pipe.width) {
                 score += 0.5;
@@ -101,7 +123,9 @@ function update() {
                 sfxPoint.play();
             }
 
-            if (detectCollision(bird, pipe)) endGame();
+            if (detectCollision(bird, pipe)) {
+                endGame();
+            }
         }
 
         while (pipeArray.length && pipeArray[0].x < -pipeWidth) {
@@ -138,11 +162,23 @@ function update() {
         context.fillStyle = "white";
         context.textAlign = "center";
         context.font = "26px Arial";
-        context.fillText("GAME OVER", boardWidth / 2, boardHeight / 2 - 30);
+        context.fillText(
+            "GAME OVER",
+            boardWidth / 2,
+            boardHeight / 2 - 30
+        );
 
         context.font = "18px Arial";
-        context.fillText("Score: " + score, boardWidth / 2, boardHeight / 2 + 10);
-        context.fillText("Best: " + highScore, boardWidth / 2, boardHeight / 2 + 40);
+        context.fillText(
+            "Score: " + score,
+            boardWidth / 2,
+            boardHeight / 2 + 10
+        );
+        context.fillText(
+            "Best: " + highScore,
+            boardWidth / 2,
+            boardHeight / 2 + 40
+        );
 
         context.textAlign = "left";
         document.getElementById("restartBtn").style.display = "block";
@@ -176,16 +212,23 @@ function placePipes() {
 }
 
 function jump(e) {
-    if (e.type === "keydown" &&
+    if (
+        e.type === "keydown" &&
         e.code !== "Space" &&
-        e.code !== "ArrowUp") return;
+        e.code !== "ArrowUp"
+    )
+        return;
+
+    userInteracted = true;
 
     velocityY = jumpPower;
 
     sfxWing.currentTime = 0;
     sfxWing.play();
 
-    if (bgm.paused) bgm.play();
+    if (bgm.paused) {
+        bgm.play().catch(() => { });
+    }
 
     if (gameOver) restartGame();
 }
@@ -209,7 +252,9 @@ function restartGame() {
     document.getElementById("restartBtn").style.display = "none";
 
     bgm.currentTime = 0;
-    bgm.play();
+    if (userInteracted) {
+        bgm.play().catch(() => { });
+    }
 }
 
 function detectCollision(a, b) {
