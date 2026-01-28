@@ -60,30 +60,4 @@ canvas {
     height: 100vh;
     border-radius: 0;
   }
-
-  #tapBtn {
-    display: block;
-    position: absolute;
-    bottom: 40px;
-    right: 125px;
-    transform: translateX(-10%);
-
-    width: 90px;
-    height: 90px;
-
-    background: rgba(0, 0, 0, 0.4);
-    color: white;
-
-    border: none;
-    border-radius: 50%;
-    font-size: 16px;
-    font-weight: bold;
-
-    cursor: pointer;
-    user-select: none;
-  }
-
-  #tapBtn:active {
-    background: rgba(0, 0, 0, 0.6);
-  }
 }

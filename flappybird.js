@@ -32,13 +32,16 @@ let velocityX = isMobile ? -1.6 : -2;
 let velocityY = 0;
 let gravity = isMobile ? 0.35 : 0.4;
 
+// 🔥 Jump power (mobile softer)
+let jumpPower = isMobile ? -4.5 : -6;
+
 let gameOver = false;
 let score = 0;
 
 // High Score
 let highScore = localStorage.getItem("flappyHighScore") || 0;
 
-// 🎵 SOUNDS (new but minimal)
+// 🎵 Sounds
 let bgm = new Audio("bgm_mario.mp3");
 bgm.loop = true;
 bgm.volume = 0.3;
@@ -66,7 +69,7 @@ window.onload = function () {
     requestAnimationFrame(update);
     setInterval(placePipes, 1500);
 
-    // Controls
+    // Controls (no button, full screen tap)
     document.addEventListener("keydown", jump);
     document.addEventListener("click", jump);
     document.addEventListener("touchstart", jump);
@@ -94,7 +97,6 @@ function update() {
                 score += 0.5;
                 pipe.passed = true;
 
-                // 🔊 point sound
                 sfxPoint.currentTime = 0;
                 sfxPoint.play();
             }
@@ -121,24 +123,26 @@ function update() {
             localStorage.setItem("flappyHighScore", highScore);
         }
 
-        // Game Over Box
         let boxMargin = isMobile ? 20 : 30;
         let boxWidth = boardWidth - boxMargin * 2;
         let boxHeight = 180;
-        let boxX = boxMargin;
-        let boxY = boardHeight / 2 - boxHeight / 2;
 
         context.fillStyle = "rgba(0,0,0,0.7)";
-        context.fillRect(boxX, boxY, boxWidth, boxHeight);
+        context.fillRect(
+            boxMargin,
+            boardHeight / 2 - boxHeight / 2,
+            boxWidth,
+            boxHeight
+        );
 
         context.fillStyle = "white";
         context.textAlign = "center";
         context.font = "26px Arial";
-        context.fillText("GAME OVER", boardWidth / 2, boxY + 50);
+        context.fillText("GAME OVER", boardWidth / 2, boardHeight / 2 - 30);
 
         context.font = "18px Arial";
-        context.fillText("Score: " + score, boardWidth / 2, boxY + 95);
-        context.fillText("Best: " + highScore, boardWidth / 2, boxY + 125);
+        context.fillText("Score: " + score, boardWidth / 2, boardHeight / 2 + 10);
+        context.fillText("Best: " + highScore, boardWidth / 2, boardHeight / 2 + 40);
 
         context.textAlign = "left";
         document.getElementById("restartBtn").style.display = "block";
@@ -176,13 +180,11 @@ function jump(e) {
         e.code !== "Space" &&
         e.code !== "ArrowUp") return;
 
-    velocityY = -6;
+    velocityY = jumpPower;
 
-    // 🔊 wing sound
     sfxWing.currentTime = 0;
     sfxWing.play();
 
-    // 🎵 start bgm after user action
     if (bgm.paused) bgm.play();
 
     if (gameOver) restartGame();
