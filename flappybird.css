@@ -38,7 +38,7 @@ canvas {
     cursor: pointer;
 }
 
-/* MOBILE FIX */
+/* MOBILE */
 @media (max-width: 768px) {
     body {
         background: #70c5ce;
@@ -51,8 +51,7 @@ canvas {
     }
 
     canvas {
-        width: 100vw;
-        /* ✅ only width */
+        width: 100vw;   /* ✅ only width */
         border-radius: 0;
     }
 }
